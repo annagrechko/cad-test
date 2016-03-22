@@ -11,11 +11,11 @@
 <body>
     <a href="index.html">Home</a>
     <ul>
-        {% if not g.user.is_authenticated()%}
+        {% if not g.user.is_authenticated%}
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('register') }}">Register</a></li>
         {% endif %}
-        {% if g.user.is_authenticated() %}
+        {% if g.user.is_authenticated %}
             <li><a href="{{ url_for('logout') }}">Logout</a> </li>
         {% endif %}
     </ul>

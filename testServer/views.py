@@ -1,18 +1,13 @@
 from flask import redirect, flash, request, render_template, url_for
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user
 from testServer import app, db
 from models import User
-
-
-@app.before_request
-def before_request():
-    g.user = current_user
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-    return url_for('index')
+    return render_template('index.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -34,7 +29,7 @@ def login():
     password = request.form['password']
     registered_user = User.query.filter_by(username=username, password=password).first()
     if registered_user is None:
-        flash('Username or Password is invalid' , 'error')
+        flash('Username or Password is invalid', 'error')
         return redirect(url_for('login'))
     login_user(registered_user)
     flash('Logged in successfully')

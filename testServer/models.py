@@ -1,5 +1,6 @@
-from testServer import db, login_manager
+from testServer import db, app
 from datetime import datetime
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer, SignatureExpired, BadSignature
 
 ROLE_USER = 0
 ROLE_ADMIN = 1
@@ -27,14 +28,25 @@ class User(db.Model):
         return True
         #Returns True if this is an active user - in addition to being authenticated, they also have activated their account, not been suspended, or any condition your application has for rejecting an account. Inactive accounts may not log in (without being forced of course).
 
-
     def is_anonymous(self):
         return False
         #Returns True if this is an anonymous user. (Actual users should return False instead.)
 
-    def get_auth_token(self):
-        #Returns an authentication token (as unicode) for the user. The auth token should uniquely identify the user, and preferably not be guessable by public information about the user such as their UID and name - nor should it expose such information.
-        return login_manager.make_secure_token()
-
     def get_id(self):
         return unicode(self.id)
+
+    def generate_auth_token(self, expiration=600):
+        s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+        return s.dumps({'id': self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except SignatureExpired:
+            return None # valid token, but expired
+        except BadSignature:
+            return None # invalid token
+        user = User.query.get(data['id'])
+        return user
