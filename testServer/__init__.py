@@ -1,6 +1,7 @@
 from flask import Flask, render_template, g
 from flask.ext.login import LoginManager, current_user
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask_bootstrap import Bootstrap
 
 # Define the WSGI application object
 app = Flask(__name__)
@@ -10,7 +11,7 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-
+Bootstrap(app)
 
 # Sample HTTP error handling
 @app.errorhandler(404)

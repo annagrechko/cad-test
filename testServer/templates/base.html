@@ -1,3 +1,4 @@
+{%- extends "bootstrap/base.html" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,8 +10,9 @@
     {% endif %}
 </head>
 <body>
-    <a href="index.html">Home</a>
+ {% block body -%}
     <ul>
+        <li><a href="{{ url_for('index') }}">Home</a></li>
         {% if not g.user.is_authenticated%}
             <li><a href="{{ url_for('login') }}">Login</a></li>
             <li><a href="{{ url_for('register') }}">Register</a></li>
@@ -20,7 +22,9 @@
         {% endif %}
     </ul>
 
+
     {% block content %}{% endblock %}
+{% endblock %}
 </body>
 </html>
 
